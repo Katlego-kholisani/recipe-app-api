@@ -1,12 +1,12 @@
 ---
 name: Checks
 
-on: [push] # Trigger when code is pushed
+on: [push] # This workflow runs every time code is pushed
 
 jobs:
   test-lint:
     name: Test and Lint
-    runs-on: ubuntu-20.04 # GitHub Actions runner (Ubuntu 20.04)
+    runs-on: ubuntu-20.04 # Uses Ubuntu 20.04 as the OS environment
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -15,19 +15,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Checkout
-        uses: actions/checkout@v2 # Pulls your repository code
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Start Docker service
-        run: |
-          sudo service docker start
+        uses: actions/checkout@v2 # Pulls the latest code from the repo
 
       - name: Test
-        run: docker-compose run --rm app sh -c "python manage.py test"
+        run: docker compose run --rm app sh -c "python manage.py test" # Runs Django unit tests
 
       - name: Run Flake8 linting
-        run: docker-compose run --rm app sh -c "flake8"
+        run: docker compose run --rm app sh -c "flake8" # Runs linting to check code formatting
