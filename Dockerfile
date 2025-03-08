@@ -14,21 +14,29 @@ WORKDIR /app
 EXPOSE 8000
 
 ARG DEV=false
+
 # Install system dependencies and Python packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc \
         python3-dev \
         libffi-dev \
         libssl-dev \
-        build-essential && \
-    python -m venv /py && \
-    /py/bin/pip install --upgrade pip --timeout 100 && \
-    /py/bin/pip install -r /tmp/requirements.txt --timeout 100 && \
-    apt-get purge -y --auto-remove build-essential && \
-    if [ ${DEV} = "true" ]; \
-        then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
-    fi && \
-    rm -rf /var/lib/apt/lists/* /tmp/*
+        build-essential \
+        libpq-dev \
+        postgresql-client \
+    && python -m venv /py \
+    && /py/bin/pip install --upgrade pip --timeout 100 \
+    && /py/bin/pip install -r /tmp/requirements.txt --timeout 100 \
+    && if [ "${DEV}" = "true" ]; then /py/bin/pip install -r /tmp/requirements.dev.txt; fi \
+    # Remove build dependencies to keep image small (mimics apk del .tmp-build-deps)
+    && apt-get purge -y --auto-remove \
+        gcc \
+        python3-dev \
+        build-essential \
+        libffi-dev \
+        libssl-dev \
+        libpq-dev \
+    && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Set the PATH for the virtual environment
 ENV PATH="/py/bin:$PATH"
@@ -38,4 +46,5 @@ RUN adduser \
       --disabled-password \
       --no-create-home \
       django-user
+
 USER django-user
