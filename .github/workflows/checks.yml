@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2 # Pulls the latest code from the repo
 
       - name: Test
-        run: docker compose run --rm app sh -c "python manage.py test" # Runs Django unit tests
+        run: docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test" # Runs Django unit tests
 
       - name: Run Flake8 linting
         run: docker compose run --rm app sh -c "flake8" # Runs linting to check code formatting
