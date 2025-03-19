@@ -24,6 +24,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         libpq-dev \
         postgresql-client \
+        libjpeg62-turbo \
+        zlib1g \
+        libjpeg-dev \
+        zlib1g-dev \
     && python -m venv /py \
     && /py/bin/pip install --upgrade pip --timeout 100 \
     && /py/bin/pip install -r /tmp/requirements.txt --timeout 100 \
@@ -36,6 +40,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libffi-dev \
         libssl-dev \
         libpq-dev \
+        libjpeg-dev \
+        zlib1g-dev \
     && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Set the PATH for the virtual environment
