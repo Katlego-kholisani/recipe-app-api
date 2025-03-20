@@ -31,7 +31,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg-dev \
         zlib1g-dev \
         libpng-dev \
+        libexpat1 \
         linux-headers-amd64 \
+        libexpat1-dev \
     && python -m venv /py \
     && /py/bin/pip install --upgrade pip --timeout 100 \
     && /py/bin/pip install -r /tmp/requirements.txt --timeout 100 \
@@ -48,6 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zlib1g-dev \
         libpng-dev \
         linux-headers-amd64 \
+        libexpat1-dev \
     && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Set the PATH for the virtual environment
