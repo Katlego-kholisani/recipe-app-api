@@ -7,6 +7,7 @@ ENV PYTHONUNBUFFERED=1
 # Copy project files
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+COPY ./scripts /scripts
 COPY ./app /app
 WORKDIR /app
 
@@ -30,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg-dev \
         zlib1g-dev \
         libpng-dev \
+        linux-headers-amd64 \
     && python -m venv /py \
     && /py/bin/pip install --upgrade pip --timeout 100 \
     && /py/bin/pip install -r /tmp/requirements.txt --timeout 100 \
@@ -45,10 +47,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg-dev \
         zlib1g-dev \
         libpng-dev \
+        linux-headers-amd64 \
     && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Set the PATH for the virtual environment
-ENV PATH="/py/bin:$PATH"
+ENV PATH="/scripts:/py/bin:$PATH"
 
 # Create a non-root user and switch to it
 RUN adduser \
@@ -58,6 +61,9 @@ RUN adduser \
       mkdir -p /vol/web/media && \
       mkdir -p /vol/web/static && \
       chown -R django-user:django-user /vol && \
-      chmod -R 755 /vol
+      chmod -R 755 /vol && \
+      chmod -R +x /scripts
 
 USER django-user
+
+CMD ["run.sh"]
